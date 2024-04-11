@@ -23,9 +23,9 @@ This web application, built using Visual Studio MVC .NET, converts decimal numbe
 ## Installation
 
 1. Clone this repository to your local machine:
-git clone <repository_url>
+git clone https://github.com/Chongjt7/NumToWords
 
-2. Open the solution file (`NumberToWordsConverter.sln`) in Visual Studio.
+2. Open the solution file (`NumsToWord.sln`) in Visual Studio.
 
 3. Build the solution by selecting `Build > Build Solution` from the menu.
 
