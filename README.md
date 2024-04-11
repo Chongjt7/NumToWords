@@ -23,7 +23,7 @@ This web application, built using Visual Studio MVC .NET, converts decimal numbe
 ## Installation
 
 1. Clone this repository to your local machine:
-git clone https://github.com/Chongjt7/NumToWords
+git clone https://github.com/Chongjt7/NumToWords.git
 
 2. Open the solution file (`NumsToWord.sln`) in Visual Studio.
 
