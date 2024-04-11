@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number to Words Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Number to Words</h1>
+        <p>Please enter a number:</p>
+        <input type="number" id="NumToText" step="0.01" min="0" placeholder="Enter a decimal number" oninput="formatDecimalInput(this)">
+        <input type="submit" value="Convert" onclick="NumbertoText()">
+        <p class="result"><span id="TransText"></span></p>
+    </div>
+
+    <script>
+        function formatDecimalInput(input) {
+    // If the input starts with a decimal point, add a leading zero
+    if (input.value === '.') {
+        input.value = '0.';
+    }
+
+    // Ensure that the input doesn't have more than 2 decimal places
+    let parts = input.value.split('.');
+    if (parts.length === 2 && parts[1].length > 2) {
+        input.value = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+        // Validate the input number against the maximum limit
+    if (parseFloat(input.value) > 1e35) {
+        alert("Max character exceeded");
+        document.getElementById("NumToText").value = 0;
+    }
+
+}
+        function NumbertoText() {
+
+            var inputValue = document.getElementById("NumToText").value.trim();
+
+            // Convert input value to a BigInt
+            var dollars = BigInt(inputValue.toString().split(".")[0]);
+            var cents = inputValue.toString().split(".")[1];
+            if (!cents) {
+                cents = "00";
+            }
+            if (cents.length == 1) {
+                cents = cents.toString() +'0';
+            }
+            // Check if the value is a valid positive number
+            if (isNaN(parseFloat(inputValue)) || dollars < 0n) {
+                alert("Please enter a valid positive number");
+                document.getElementById("NumToText").value = "0.00";
+                return;
+            }
+
+            if(dollars=="0" && parseInt(cents)>0)
+            {
+                document.getElementById("TransText").innerHTML = numberToWords(cents) + " cents";
+            }else if(parseInt(cents)>0){
+                document.getElementById("TransText").innerHTML = numberToWords(dollars) +" dollars and "+ numberToWords(cents) + " cents";
+            }
+            else{
+                document.getElementById("TransText").innerHTML = numberToWords(dollars) +" dollars";
+            }
+    
+        }
+
+        function numberToWords(number) {
+            const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+            const teens = ['', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+            const tens = ['', 'ten', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+            const scales = ['', 'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion', 'sextillion', 'septillion', 'octillion', 'nonillion', 'decillion'];
+
+            function convertLessThanThousand(n) {
+                if (n === 0n) {
+                    return '';
+                }
+
+                let words = '';
+                if (n >= 100n) {
+                    words += ones[n / 100n] + ' hundred ';
+                    n %= 100n;
+                }
+                if (n == 10n || n >= 20n) {
+                    words += tens[n / 10n] + ' ';
+                    n %= 10n;
+                }
+                if (n > 0n) {
+                    if (n < 10n) {
+                        words += ones[n];
+                    } else {
+                        words += teens[n - 10n];
+                    }
+                }
+                return words.trim();
+            }
+
+            function convert(number) {
+                if (number === 0n) {
+                    return 'zero';
+                }
+
+                let words = '';
+                if (number < 0n) {
+                    words += 'negative ';
+                    number = -number;
+                }
+
+                let scaleIndex = 0;
+                while (number > 0n) {
+                    if (number % 1000n !== 0n) {
+                        words = convertLessThanThousand(number % 1000n) + ' ' + scales[scaleIndex] + ' ' + words;
+                    }
+                    number /= 1000n;
+                    scaleIndex++;
+                }
+
+                return words.trim();
+            }
+
+            const finalWords = convert(BigInt(number));
+
+            return finalWords;
+        }
+    </script>
+</body>
+</html>
